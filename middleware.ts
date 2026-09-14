@@ -7,6 +7,9 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Deja pasar sin autenticación los recursos públicos de la PWA
+    // (manifest, iconos, service worker) — Android los pide sin sesión
+    // al verificar si la app es instalable / generar el WebAPK.
+    "/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|icon|apple-icon|icons|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
