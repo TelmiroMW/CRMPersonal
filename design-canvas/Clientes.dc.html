@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root{ --bg:#e7e6e2; --surface:#ffffff; --ink:#0a0a0a; --ink-2:#8e8e93; --ink-3:#c7c7cc;
+      --border:#ececea; --accent:#2f6fed; --accent-soft:#eaf1fe; --income:#1fd17b; }
+    * { box-sizing:border-box; font-variant-numeric:tabular-nums; }
+    body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif; background:var(--bg); }
+    a{ color:var(--accent); }
+
+    @keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+    .fadein{ animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both; }
+
+    .glass{ background:rgba(255,255,255,.5); backdrop-filter:blur(22px) saturate(170%); -webkit-backdrop-filter:blur(22px) saturate(170%);
+      border:1px solid rgba(255,255,255,.75); box-shadow:0 1px 1px rgba(255,255,255,.6) inset, 0 10px 28px rgba(31,38,66,.10); }
+
+    .ccard{ border-radius:16px; margin-bottom:10px; overflow:hidden; cursor:pointer; transition:transform .15s ease; }
+    .ccard:active{ transform:scale(.985); }
+    .ccard-head{ display:flex; align-items:center; gap:12px; padding:15px 16px; }
+    .ccard-detail{ display:grid; transition:grid-template-rows .3s ease; }
+    .ccard-detail-inner{ overflow:hidden; min-height:0; }
+    .cproj-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 16px 10px 68px; font-size:13px; border-top:1px solid rgba(10,10,10,.06); }
+    .cproj-dot{ width:5px; height:5px; border-radius:50%; background:var(--ink-3); margin-right:8px; }
+
+    .tabbar{ position:absolute; left:30px; right:30px; bottom:22px; height:58px; background:rgba(20,20,22,.68); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%);
+      border:1px solid rgba(255,255,255,.14); border-radius:29px; display:flex; align-items:center; justify-content:space-around; padding:0 6px; box-shadow:0 16px 36px rgba(10,10,18,.28); }
+    .tabitem{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .tabitem.active{ background:rgba(255,255,255,.18); }
+  </style>
+</helmet>
+
+<div style="width:390px; height:844px; background:radial-gradient(115% 28% at 90% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 24% at 6% 6%, #f3dcf5 0%, rgba(243,220,245,0) 55%), var(--bg); overflow:hidden; position:relative;">
+  <div style="display:flex; flex-direction:column; height:100%; padding:56px 20px 96px;">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:0 2px 6px;">
+      <div style="font-size:32px; font-weight:800; letter-spacing:-0.02em;">Clientes</div>
+      <div style="width:38px; height:38px; border-radius:50%; background:var(--ink); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(10,10,10,.25);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div style="font-size:12.5px; color:var(--ink-2); margin:0 2px 16px;">9 clientes · €48.200 facturados este año</div>
+
+    <div style="overflow-y:auto; flex:1;">
+      <sc-for list="{{clients}}" as="c" hint-placeholder-count="4">
+        <div class="ccard glass fadein" style="animation-delay:{{c.enterDelay}};" onClick="{{c.onToggle}}">
+          <div class="ccard-head">
+            <div style="width:44px; height:44px; border-radius:13px; flex-shrink:0; overflow:hidden; box-shadow:0 5px 12px rgba(10,10,10,.14), 0 0 0 1px rgba(10,10,10,.05);">
+              <div style="width:100%; height:100%; {{c.flagStyle}}"></div>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:15.5px; font-weight:700;">{{c.name}}</div>
+              <div style="font-size:12px; color:var(--ink-2); margin-top:1px;">{{c.projectCount}} proyectos · {{c.country}}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:15px; font-weight:700;">{{c.total}}</div>
+              <div style="font-size:10.5px; color:var(--ink-2);">facturado</div>
+            </div>
+            <div style="{{c.chevronStyle}}">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="#9a9a9e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="ccard-detail" style="grid-template-rows:{{c.detailRows}};">
+            <div class="ccard-detail-inner">
+              <sc-for list="{{c.projects}}" as="p" hint-placeholder-count="2">
+                <div class="cproj-row">
+                  <span style="display:flex; align-items:center; color:var(--ink-2);"><span class="cproj-dot"></span>{{p.name}}</span>
+                  <span style="font-weight:700;">{{p.amount}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M4 11L12 4L20 11V20H14V14H10V20H4V11Z" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="4" rx="1.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><rect x="4" y="15" width="16" height="4" rx="1.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/></svg>
+    </div>
+    <div class="tabitem active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#ffffff" stroke-width="1.8"/><path d="M5 20C5 16.5 8 14.5 12 14.5C16 14.5 19 16.5 19 20" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="3.6" ry="8.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><path d="M3.5 12H20.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { openId: 'km' };
+  }
+
+  renderVals() {
+    const flagES = 'background:linear-gradient(#AA151B 0 25%, #F1BF00 25% 75%, #AA151B 75% 100%);';
+    const flagDE = 'background:linear-gradient(#000 0 33.3%, #DD0000 33.3% 66.6%, #FFCE00 66.6% 100%);';
+    const flagUS = 'background:linear-gradient(#3C3B6E 0 55%, #B22234 55% 63%, #fff 63% 71%, #B22234 71% 79%, #fff 79% 87%, #B22234 87% 95%, #fff 95% 100%);';
+    const flagMX = 'background:linear-gradient(90deg, #006847 0 33.3%, #fff 33.3% 66.6%, #CE1126 66.6% 100%);';
+
+    const data = [
+      { id:'km', name:'Kimovil', badge:'KM', logoBg:'linear-gradient(155deg,#e8654a,#c0432b)', logoShadow:'rgba(192,67,43,.35)', total:'€27.400', country:'España', flagStyle:flagES,
+        projects:[{name:'Rediseño web', amount:'€12.000'},{name:'Chatbot soporte', amount:'€15.400'}] },
+      { id:'lt', name:'LTA Finance', badge:'LT', logoBg:'linear-gradient(155deg,#2ea679,#1e6b52)', logoShadow:'rgba(30,107,82,.32)', total:'€8.500', country:'Alemania', flagStyle:flagDE,
+        projects:[{name:'App de gestión', amount:'€8.500'}] },
+      { id:'ac', name:'Acme', badge:'AC', logoBg:'linear-gradient(155deg,#7c6bea,#5b45c4)', logoShadow:'rgba(91,69,196,.32)', total:'€5.000', country:'Estados Unidos', flagStyle:flagUS,
+        projects:[{name:'Landing de producto', amount:'€5.000'}] },
+      { id:'zt', name:'Zenith', badge:'ZT', logoBg:'linear-gradient(155deg,#e0ac2f,#b8860b)', logoShadow:'rgba(184,134,11,.32)', total:'€15.000', country:'México', flagStyle:flagMX,
+        projects:[{name:'Rebrand completo', amount:'€15.000'}] },
+    ];
+
+    const openId = this.state.openId;
+    const clients = data.map((c, idx) => {
+      const open = c.id === openId;
+      return {
+        ...c,
+        projectCount: c.projects.length,
+        enterDelay: `${(idx * 0.06).toFixed(2)}s`,
+        onToggle: () => this.setState({ openId: open ? null : c.id }),
+        chevronStyle: `transition:transform .25s ease; transform:rotate(${open ? '180deg' : '0deg'});`,
+        detailRows: open ? '1fr' : '0fr',
+      };
+    });
+
+    return { clients };
+  }
+}
+</script>
+</body>
+</html>

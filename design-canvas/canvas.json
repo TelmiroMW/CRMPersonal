@@ -1,0 +1,10 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Resumen", "x": 0, "y": 0, "w": 390, "h": 844 },
+    { "file": "Proyectos.dc.html", "title": "Proyectos", "x": 470, "y": 0, "w": 390, "h": 844, "is_interactive": true },
+    { "file": "Detalle.dc.html", "title": "Detalle de proyecto", "x": 940, "y": 0, "w": 390, "h": 844 },
+    { "file": "Clientes.dc.html", "title": "Clientes", "x": 1410, "y": 0, "w": 390, "h": 844, "is_interactive": true },
+    { "file": "Mapa.dc.html", "title": "Mapa de países", "x": 1880, "y": 0, "w": 390, "h": 844 }
+  ],
+  "launch": { "view": "canvas" }
+}

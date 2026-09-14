@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root{ --bg:#e7e6e2; --surface:#ffffff; --ink:#0a0a0a; --ink-2:#8e8e93; --ink-3:#c7c7cc;
+      --border:#ececea; --accent:#2f6fed; --accent-soft:#eaf1fe; }
+    * { box-sizing:border-box; font-variant-numeric:tabular-nums; }
+    body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif; background:var(--bg); }
+
+    @keyframes spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+    @keyframes meridian{ 0%,100%{ rx:88; } 50%{ rx:4; } }
+    @keyframes dotPulse{ 0%,100%{ r:5.5;} 50%{ r:7;} }
+    @keyframes fadeUp{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+    .fadein{ animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both; }
+
+    .glass{ background:rgba(255,255,255,.5); backdrop-filter:blur(22px) saturate(170%); -webkit-backdrop-filter:blur(22px) saturate(170%);
+      border:1px solid rgba(255,255,255,.75); box-shadow:0 1px 1px rgba(255,255,255,.6) inset, 0 10px 28px rgba(31,38,66,.10); }
+
+    .globe-wrap{ display:flex; justify-content:center; padding:6px 0 2px; }
+    .merid{ animation:meridian 7s ease-in-out infinite; transform-origin:115px 115px; }
+    .slow-spin{ animation:spin 60s linear infinite; transform-origin:115px 115px; }
+    .cdot{ animation:dotPulse 2.4s ease-in-out infinite; }
+
+    .flag{ display:block; width:22px; height:15px; border-radius:3px; box-shadow:0 0 0 1px rgba(10,10,10,.08); flex-shrink:0; }
+    .crow{ display:flex; align-items:center; gap:12px; padding:13px 16px; }
+    .crow + .crow{ border-top:1px solid rgba(10,10,10,.06); }
+
+    .tabbar{ position:absolute; left:30px; right:30px; bottom:22px; height:58px; background:rgba(20,20,22,.68); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%);
+      border:1px solid rgba(255,255,255,.14); border-radius:29px; display:flex; align-items:center; justify-content:space-around; padding:0 6px; box-shadow:0 16px 36px rgba(10,10,18,.28); }
+    .tabitem{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .tabitem.active{ background:rgba(255,255,255,.18); }
+  </style>
+</helmet>
+
+<div style="width:390px; height:844px; background:radial-gradient(115% 30% at 50% -8%, #d9e6fb 0%, rgba(217,230,251,0) 62%), var(--bg); overflow:hidden; position:relative;">
+  <div style="display:flex; flex-direction:column; height:100%; padding:56px 20px 96px;">
+
+    <div style="margin:0 2px 2px;">
+      <div style="font-size:32px; font-weight:800; letter-spacing:-0.02em;">Mapa</div>
+      <div style="font-size:13px; color:var(--ink-2); margin-top:2px;">Dónde está tu negocio en el mundo</div>
+    </div>
+
+    <div class="fadein globe-wrap">
+      <svg width="240" height="240" viewBox="0 0 230 230">
+        <defs>
+          <radialGradient id="sphereShade" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="55%" stop-color="#eef1f5"/>
+            <stop offset="100%" stop-color="#d3d9e0"/>
+          </radialGradient>
+          <radialGradient id="sphereRim" cx="50%" cy="50%" r="50%">
+            <stop offset="82%" stop-color="rgba(20,30,50,0)"/>
+            <stop offset="100%" stop-color="rgba(20,30,50,.18)"/>
+          </radialGradient>
+        </defs>
+
+        <circle cx="115" cy="115" r="90" fill="url(#sphereShade)"/>
+        <circle cx="115" cy="115" r="90" fill="url(#sphereRim)"/>
+
+        <g class="slow-spin" style="mix-blend-mode:multiply;">
+          <ellipse cx="115" cy="115" rx="90" ry="34" fill="none" stroke="#c7cedb" stroke-width="1"/>
+          <ellipse cx="115" cy="115" rx="90" ry="63" fill="none" stroke="#c7cedb" stroke-width="1"/>
+          <ellipse class="merid" cx="115" cy="115" ry="90" fill="none" stroke="#c7cedb" stroke-width="1" style="animation-delay:0s;"/>
+          <ellipse class="merid" cx="115" cy="115" ry="90" fill="none" stroke="#c7cedb" stroke-width="1" style="animation-delay:1.75s;"/>
+          <ellipse class="merid" cx="115" cy="115" ry="90" fill="none" stroke="#c7cedb" stroke-width="1" style="animation-delay:3.5s;"/>
+          <ellipse class="merid" cx="115" cy="115" ry="90" fill="none" stroke="#c7cedb" stroke-width="1" style="animation-delay:5.25s;"/>
+        </g>
+
+        <circle cx="115" cy="115" r="90" fill="none" stroke="rgba(10,10,10,.12)" stroke-width="1"/>
+
+        <g class="slow-spin">
+          <circle class="cdot" cx="82" cy="100" r="5.5" fill="#2f6fed"/>
+          <circle class="cdot" cx="146" cy="90" r="5.5" fill="#2f6fed" style="animation-delay:.5s;"/>
+          <circle class="cdot" cx="100" cy="136" r="5.5" fill="#2f6fed" style="animation-delay:1s;"/>
+          <circle class="cdot" cx="156" cy="146" r="5.5" fill="#2f6fed" style="animation-delay:1.5s;"/>
+          <circle cx="82" cy="100" r="9" fill="none" stroke="rgba(47,111,237,.3)" stroke-width="1.5"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="fadein" style="animation-delay:.1s; text-align:center; font-size:12px; color:var(--ink-3); margin-bottom:16px;">4 países con clientes activos</div>
+
+    <div class="fadein" style="animation-delay:.15s; display:flex; justify-content:space-between; align-items:baseline; margin:0 2px 10px;">
+      <div style="font-size:12px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.05em;">Por país</div>
+      <div style="font-size:13px; font-weight:700;">€48.200 total</div>
+    </div>
+
+    <div class="fadein glass" style="animation-delay:.2s; border-radius:16px; overflow:hidden;">
+      <div class="crow">
+        <div class="flag" style="background:linear-gradient(#AA151B 0 25%, #F1BF00 25% 75%, #AA151B 75% 100%);"></div>
+        <div style="flex:1;"><div style="font-size:14.5px; font-weight:600;">España</div><div style="font-size:11.5px; color:var(--ink-2);">2 clientes</div></div>
+        <div style="font-size:14.5px; font-weight:700;">€20.500</div>
+      </div>
+      <div class="crow">
+        <div class="flag" style="background:linear-gradient(#000 0 33.3%, #DD0000 33.3% 66.6%, #FFCE00 66.6% 100%);"></div>
+        <div style="flex:1;"><div style="font-size:14.5px; font-weight:600;">Alemania</div><div style="font-size:11.5px; color:var(--ink-2);">1 cliente</div></div>
+        <div style="font-size:14.5px; font-weight:700;">€8.500</div>
+      </div>
+      <div class="crow">
+        <div class="flag" style="background:linear-gradient(#3C3B6E 0 55%, #B22234 55% 63%, #fff 63% 71%, #B22234 71% 79%, #fff 79% 87%, #B22234 87% 95%, #fff 95% 100%);"></div>
+        <div style="flex:1;"><div style="font-size:14.5px; font-weight:600;">Estados Unidos</div><div style="font-size:11.5px; color:var(--ink-2);">1 cliente</div></div>
+        <div style="font-size:14.5px; font-weight:700;">€5.000</div>
+      </div>
+      <div class="crow">
+        <div class="flag" style="background:linear-gradient(90deg, #006847 0 33.3%, #fff 33.3% 66.6%, #CE1126 66.6% 100%);"></div>
+        <div style="flex:1;"><div style="font-size:14.5px; font-weight:600;">México</div><div style="font-size:11.5px; color:var(--ink-2);">1 cliente</div></div>
+        <div style="font-size:14.5px; font-weight:700;">€15.000</div>
+      </div>
+    </div>
+
+    <div style="flex:1;"></div>
+    <div class="fadein" style="animation-delay:.25s; font-size:11px; color:var(--ink-3); text-align:center;">Versión final: globo 3D interactivo (WebGL) con países reales coloreados</div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M4 11L12 4L20 11V20H14V14H10V20H4V11Z" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="4" rx="1.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><rect x="4" y="15" width="16" height="4" rx="1.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><path d="M5 20C5 16.5 8 14.5 12 14.5C16 14.5 19 16.5 19 20" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div class="tabitem active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#ffffff" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="3.6" ry="8.5" stroke="#ffffff" stroke-width="1.8"/><path d="M3.5 12H20.5" stroke="#ffffff" stroke-width="1.8"/></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

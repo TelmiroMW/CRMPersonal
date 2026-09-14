@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root{ --bg:#e7e6e2; --surface:#ffffff; --ink:#0a0a0a; --ink-2:#8e8e93; --ink-3:#c7c7cc;
+      --border:#ececea; --accent:#2f6fed; --accent-soft:#eaf1fe; --urgent:#d1442e; --urgent-soft:#fbeae6; --income:#1fd17b; }
+    * { box-sizing:border-box; font-variant-numeric:tabular-nums; }
+    body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif; background:var(--bg); }
+    a{ color:var(--accent); } a:hover{ color:#1e57cc; }
+
+    @keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+    @keyframes countUp{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
+    @keyframes ptrackFill{ from{ transform:scaleX(0);} to{ transform:scaleX(1);} }
+    @keyframes barGrow{ from{ transform:scaleY(0);} to{ transform:scaleY(1);} }
+
+    .fadein{ animation:fadeUp .5s cubic-bezier(.2,.8,.2,1) both; }
+
+    .ptrack{ display:flex; gap:3px; margin:9px 0 5px; }
+    .ptrack-seg{ flex:1; height:3.5px; border-radius:2px; background:rgba(10,10,10,.08); position:relative; overflow:hidden; transform-origin:left; }
+    .ptrack-seg.done{ background:rgba(10,10,10,.55); animation:ptrackFill .45s ease-out both; }
+    .ptrack-seg.now{ background:rgba(10,10,10,.08); }
+    .ptrack-seg.now::after{ content:''; position:absolute; inset:0; background:var(--accent); border-radius:2px;
+      animation:ptrackFill .5s ease-out both; transform-origin:left; }
+
+    .tabbar{ position:absolute; left:30px; right:30px; bottom:22px; height:58px; background:rgba(20,20,22,.68); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%);
+      border:1px solid rgba(255,255,255,.14); border-radius:29px; display:flex; align-items:center; justify-content:space-around; padding:0 6px; box-shadow:0 16px 36px rgba(10,10,18,.28); }
+    .tabitem{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .tabitem.active{ background:rgba(255,255,255,.18); }
+
+    .glass{ background:rgba(255,255,255,.5); backdrop-filter:blur(22px) saturate(170%); -webkit-backdrop-filter:blur(22px) saturate(170%);
+      border:1px solid rgba(255,255,255,.75); box-shadow:0 1px 1px rgba(255,255,255,.6) inset, 0 10px 28px rgba(31,38,66,.10); }
+
+    .mini-bars{ display:flex; align-items:flex-end; gap:4px; height:26px; }
+    .mini-bars > div{ width:6px; border-radius:2px 2px 0 0; background:rgba(10,10,10,.14); animation:barGrow .5s ease-out both; transform-origin:bottom; }
+    .mini-bars > div.hi{ background:var(--accent); }
+  </style>
+</helmet>
+
+<div style="width:390px; height:844px; background:radial-gradient(115% 34% at 12% -6%, #d9e6fb 0%, rgba(217,230,251,0) 62%), radial-gradient(90% 30% at 92% 6%, #f3dcf5 0%, rgba(243,220,245,0) 58%), var(--bg); overflow:hidden; position:relative;">
+  <div style="display:flex; flex-direction:column; height:100%; padding:56px 20px 96px;">
+
+    <div class="fadein" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;" >
+      <div>
+        <div style="font-size:15px; font-weight:600; color:var(--ink);">Hola, Telmo</div>
+        <div style="font-size:12px; color:var(--ink-2); margin-top:1px;">martes, 13 de octubre</div>
+      </div>
+      <div style="width:36px; height:36px; border-radius:50%; background:var(--surface); box-shadow:0 1px 2px rgba(20,20,15,.05), 0 4px 12px rgba(20,20,15,.06); display:flex; align-items:center; justify-content:center;">
+        <svg width="15" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2C10 2 8.5 3.6 8.5 5.6V7C6 8 4.5 10.3 4.5 13V17L2.5 19.5V20.5H21.5V19.5L19.5 17V13C19.5 10.3 18 8 15.5 7V5.6C15.5 3.6 14 2 12 2Z" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 20.5C9.5 21.9 10.6 23 12 23C13.4 23 14.5 21.9 14.5 20.5" stroke="#0a0a0a" stroke-width="1.6"/></svg>
+      </div>
+    </div>
+
+    <div class="fadein" style="animation-delay:.05s; display:flex; justify-content:space-between; align-items:flex-end; margin-top:6px;">
+      <div>
+        <div style="font-size:11.5px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em;">Ingresos activos</div>
+        <div style="font-size:44px; font-weight:800; letter-spacing:-0.03em; color:var(--ink); margin:2px 0 6px;">€48.200</div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="font-size:12.5px; font-weight:700; color:var(--income); background:#e8f9ef; padding:3px 9px; border-radius:20px;">↑ €3.200 este mes</span>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="mini-bars" style="justify-content:flex-end;">
+          <div style="height:40%; animation-delay:.1s;"></div>
+          <div style="height:55%; animation-delay:.15s;"></div>
+          <div style="height:35%; animation-delay:.2s;"></div>
+          <div style="height:70%; animation-delay:.25s;"></div>
+          <div style="height:50%; animation-delay:.3s;"></div>
+          <div class="hi" style="height:95%; animation-delay:.35s;"></div>
+        </div>
+        <div style="font-size:9.5px; color:var(--ink-3); margin-top:4px;">6 semanas</div>
+      </div>
+    </div>
+
+    <div class="fadein" style="animation-delay:.07s; font-size:12.5px; color:var(--ink-2); margin:14px 0 2px;">6 proyectos activos · 9 clientes</div>
+
+    <div class="fadein" style="animation-delay:.1s; display:flex; justify-content:space-between; align-items:baseline; margin:16px 0 10px;">
+      <div style="font-size:12px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.05em;">En marcha</div>
+      <div style="font-size:13px; font-weight:600; color:var(--accent);">Ver todos</div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <div class="fadein glass" style="animation-delay:.15s; border-radius:16px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="font-size:16px; font-weight:700; letter-spacing:-0.005em;">Rediseño web</div>
+            <div style="font-size:12.5px; color:var(--ink-2); margin-top:1px;">Kimovil</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px; font-weight:700;">€12.000</div>
+            <div style="font-size:11px; font-weight:600; color:var(--urgent); margin-top:1px;">12 días</div>
+          </div>
+        </div>
+        <div class="ptrack">
+          <div class="ptrack-seg done" style="animation-delay:.2s;"></div>
+          <div class="ptrack-seg done" style="animation-delay:.28s;"></div>
+          <div class="ptrack-seg now" style="animation-delay:.36s;"></div>
+          <div class="ptrack-seg"></div>
+        </div>
+        <div style="font-size:11px; color:var(--ink-2);">Fase 3 de 4 · Desarrollo</div>
+      </div>
+
+      <div class="fadein glass" style="animation-delay:.2s; border-radius:16px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="font-size:16px; font-weight:700; letter-spacing:-0.005em;">App de gestión</div>
+            <div style="font-size:12.5px; color:var(--ink-2); margin-top:1px;">LTA Finance</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px; font-weight:700;">€8.500</div>
+            <div style="font-size:11px; color:var(--ink-2); margin-top:1px;">30 días</div>
+          </div>
+        </div>
+        <div class="ptrack">
+          <div class="ptrack-seg done" style="animation-delay:.25s;"></div>
+          <div class="ptrack-seg now" style="animation-delay:.33s;"></div>
+          <div class="ptrack-seg"></div>
+          <div class="ptrack-seg"></div>
+          <div class="ptrack-seg"></div>
+        </div>
+        <div style="font-size:11px; color:var(--ink-2);">Fase 2 de 5 · QA</div>
+      </div>
+
+      <div class="fadein glass" style="animation-delay:.25s; border-radius:16px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="font-size:16px; font-weight:700; letter-spacing:-0.005em;">Landing de producto</div>
+            <div style="font-size:12.5px; color:var(--ink-2); margin-top:1px;">Acme</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px; font-weight:700;">€5.000</div>
+            <div style="font-size:11px; color:var(--ink-2); margin-top:1px;">45 días</div>
+          </div>
+        </div>
+        <div class="ptrack">
+          <div class="ptrack-seg now" style="animation-delay:.3s;"></div>
+          <div class="ptrack-seg"></div>
+          <div class="ptrack-seg"></div>
+        </div>
+        <div style="font-size:11px; color:var(--ink-2);">Fase 1 de 3 · Diseño</div>
+      </div>
+
+    </div>
+
+    <div class="fadein glass" style="animation-delay:.3s; display:flex; align-items:center; gap:10px; border-radius:14px; padding:11px 14px; margin-top:10px;">
+      <div style="width:26px; height:26px; border-radius:50%; background:rgba(31,209,123,.18); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13L9.5 17.5L19 6" stroke="#1e9a5c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:12.5px; color:var(--ink-2);"><strong style="color:var(--ink); font-weight:600;">Diseño UI</strong> completada en Kimovil · hace 2 días</div>
+    </div>
+
+    <div style="flex:1;"></div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tabitem active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M4 11L12 4L20 11V20H14V14H10V20H4V11Z" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="4" rx="1.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><rect x="4" y="15" width="16" height="4" rx="1.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><path d="M5 20C5 16.5 8 14.5 12 14.5C16 14.5 19 16.5 19 20" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="3.6" ry="8.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><path d="M3.5 12H20.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

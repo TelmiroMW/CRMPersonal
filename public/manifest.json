@@ -1,0 +1,13 @@
+{
+  "name": "CRM Personal",
+  "short_name": "CRM",
+  "description": "Gestión de clientes y proyectos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e7e6e2",
+  "theme_color": "#e7e6e2",
+  "icons": [
+    { "src": "/icon", "sizes": "64x64", "type": "image/png" },
+    { "src": "/apple-icon", "sizes": "180x180", "type": "image/png" }
+  ]
+}

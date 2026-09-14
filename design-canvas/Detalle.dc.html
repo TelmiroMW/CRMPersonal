@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root{ --bg:#e7e6e2; --surface:#ffffff; --ink:#0a0a0a; --ink-2:#8e8e93; --ink-3:#c7c7cc;
+      --border:#ececea; --accent:#2f6fed; --accent-soft:#eaf1fe; --urgent:#d1442e; --urgent-soft:#fbeae6; --income:#1fd17b; }
+    * { box-sizing:border-box; font-variant-numeric:tabular-nums; }
+    body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif; background:var(--bg); }
+    a{ color:var(--accent); } a:hover{ color:#1e57cc; }
+
+    @keyframes fadeUp{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+    @keyframes drawLine{ from{ transform:scaleY(0);} to{ transform:scaleY(1);} }
+    @keyframes popIn{ from{ transform:scale(.5); opacity:0;} to{ transform:scale(1); opacity:1;} }
+    .fadein{ animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both; }
+
+    .glass{ background:rgba(255,255,255,.5); backdrop-filter:blur(22px) saturate(170%); -webkit-backdrop-filter:blur(22px) saturate(170%);
+      border:1px solid rgba(255,255,255,.75); box-shadow:0 1px 1px rgba(255,255,255,.6) inset, 0 10px 28px rgba(31,38,66,.10); }
+    .field{ border-radius:14px; padding:11px 14px; }
+    .field-label{ font-size:10.5px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.06em; margin-bottom:3px; }
+    .field-value{ font-size:16px; font-weight:700; color:var(--ink); }
+    .edit-pencil{ opacity:.35; }
+
+    .tl-row{ display:flex; gap:14px; }
+    .tl-rail{ display:flex; flex-direction:column; align-items:center; width:22px; flex-shrink:0; }
+    .tl-dot{ width:22px; height:22px; border-radius:50%; flex-shrink:0; z-index:1; display:flex; align-items:center; justify-content:center; }
+    .tl-dot.done{ background:var(--ink); }
+    .tl-dot.now{ background:#fff; border:2.5px solid var(--accent); }
+    .now-core{ width:8px; height:8px; border-radius:50%; background:var(--accent); }
+    .tl-dot.todo{ background:var(--surface); border:2px solid var(--border); }
+    .tl-line{ width:2px; flex:1; background:var(--border); transform-origin:top; margin:2px 0; }
+    .tl-line.done{ background:var(--ink); animation:drawLine .5s ease-out both; }
+  </style>
+</helmet>
+
+<div style="width:390px; height:844px; background:radial-gradient(115% 28% at 90% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 24% at 6% 6%, #f3dcf5 0%, rgba(243,220,245,0) 55%), var(--bg); overflow:hidden; position:relative;">
+  <div style="display:flex; flex-direction:column; height:100%; padding:56px 20px 24px; overflow:hidden;">
+
+    <div class="fadein" style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+      <div style="width:34px; height:34px; border-radius:50%; background:var(--surface); box-shadow:0 1px 2px rgba(20,20,15,.05); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="#0a0a0a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:22px; font-weight:800; letter-spacing:-0.015em;">Rediseño web</div>
+        <div style="font-size:12.5px; color:var(--ink-2);">Kimovil</div>
+      </div>
+      <div style="width:34px; height:34px; border-radius:50%; background:var(--surface); box-shadow:0 1px 2px rgba(20,20,15,.05); display:flex; align-items:center; justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.6" fill="#0a0a0a"/><circle cx="12" cy="12" r="1.6" fill="#0a0a0a"/><circle cx="19" cy="12" r="1.6" fill="#0a0a0a"/></svg>
+      </div>
+    </div>
+
+    <div class="fadein" style="animation-delay:.05s; display:flex; gap:10px; margin-bottom:18px;">
+      <div class="field glass" style="flex:1;">
+        <div class="field-label">Ingreso total</div>
+        <div class="field-value" style="display:flex; align-items:center; gap:6px;">€12.000 <svg class="edit-pencil" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 20L4.7 16.6L16.6 4.7C17.2 4.1 18.2 4.1 18.8 4.7L19.3 5.2C19.9 5.8 19.9 6.8 19.3 7.4L7.4 19.3L4 20Z" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="field glass" style="flex:1;">
+        <div class="field-label">Entrega</div>
+        <div class="field-value" style="display:flex; align-items:center; gap:6px;">25 oct <svg class="edit-pencil" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 20L4.7 16.6L16.6 4.7C17.2 4.1 18.2 4.1 18.8 4.7L19.3 5.2C19.9 5.8 19.9 6.8 19.3 7.4L7.4 19.3L4 20Z" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      </div>
+    </div>
+
+    <div class="fadein" style="animation-delay:.1s; display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+      <div style="font-size:12px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.05em;">Fases</div>
+      <div style="font-size:13px; font-weight:600; color:var(--accent);">+ Añadir fase</div>
+    </div>
+
+    <div class="fadein glass" style="animation-delay:.15s; flex:1; overflow:hidden; border-radius:18px; padding:18px 16px 6px;">
+
+      <div class="tl-row" style="min-height:60px;">
+        <div class="tl-rail"><div class="tl-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9.5 17.5L19 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tl-line done" style="animation-delay:.2s;"></div></div>
+        <div style="padding-bottom:20px;">
+          <div style="font-size:14px; font-weight:600;">Brief &amp; alcance</div>
+          <div style="font-size:12px; color:var(--ink-2); margin-top:2px;">Completada · 3 jul</div>
+        </div>
+      </div>
+
+      <div class="tl-row" style="min-height:60px;">
+        <div class="tl-rail"><div class="tl-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13L9.5 17.5L19 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tl-line done" style="animation-delay:.3s;"></div></div>
+        <div style="padding-bottom:20px;">
+          <div style="font-size:14px; font-weight:600;">Diseño UI</div>
+          <div style="font-size:12px; color:var(--ink-2); margin-top:2px;">Completada · 28 jul</div>
+        </div>
+      </div>
+
+      <div class="tl-row" style="min-height:60px;">
+        <div class="tl-rail"><div class="tl-dot now"><div class="now-core"></div></div><div class="tl-line" style="animation-delay:.4s;"></div></div>
+        <div style="padding-bottom:20px; flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:17px; font-weight:700; color:var(--accent);">Desarrollo</div>
+            <div style="font-size:11px; font-weight:700; color:var(--urgent); background:var(--urgent-soft); padding:3px 9px; border-radius:20px;">vence en 12 días</div>
+          </div>
+          <div style="font-size:12px; color:var(--ink-2); margin-top:2px;">En curso desde el 29 jul</div>
+        </div>
+      </div>
+
+      <div class="tl-row" style="min-height:44px;">
+        <div class="tl-rail"><div class="tl-dot todo"></div></div>
+        <div>
+          <div style="font-size:14px; font-weight:600; color:var(--ink-3);">Entrega &amp; QA</div>
+          <div style="font-size:12px; color:var(--ink-3); margin-top:2px;">Deadline 25 oct</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fadein" style="animation-delay:.2s; height:50px; border-radius:25px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; gap:7px; font-size:14px; font-weight:600;">
+      <svg style="display:inline-block; animation:popIn .35s .5s cubic-bezier(.16,1,.3,1) both;" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13L9.5 17.5L19 6" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Marcar "Desarrollo" como completada
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

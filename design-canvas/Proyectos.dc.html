@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root{ --bg:#e7e6e2; --surface:#ffffff; --ink:#0a0a0a; --ink-2:#8e8e93; --ink-3:#c7c7cc;
+      --border:#ececea; --accent:#2f6fed; --accent-soft:#eaf1fe; --urgent:#d1442e; --urgent-soft:#fbeae6; }
+    * { box-sizing:border-box; font-variant-numeric:tabular-nums; }
+    body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif; background:var(--bg); }
+
+    @keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+    @keyframes ptrackFill{ from{ transform:scaleX(0);} to{ transform:scaleX(1);} }
+    .fadein{ animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both; }
+
+    .glass{ background:rgba(255,255,255,.5); backdrop-filter:blur(22px) saturate(170%); -webkit-backdrop-filter:blur(22px) saturate(170%);
+      border:1px solid rgba(255,255,255,.75); box-shadow:0 1px 1px rgba(255,255,255,.6) inset, 0 10px 28px rgba(31,38,66,.10); }
+    .glass-flat{ background:rgba(255,255,255,.55); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border:1px solid rgba(255,255,255,.7); }
+
+    .ptrack{ display:flex; gap:3px; margin:10px 0 5px; }
+    .ptrack-seg{ flex:1; height:3.5px; border-radius:2px; background:rgba(10,10,10,.08); position:relative; overflow:hidden; transform-origin:left; }
+    .ptrack-seg.done{ background:rgba(10,10,10,.55); animation:ptrackFill .4s ease-out both; }
+    .ptrack-seg.now{ background:rgba(10,10,10,.08); }
+    .ptrack-seg.now::after{ content:''; position:absolute; inset:0; background:var(--accent); border-radius:2px; animation:ptrackFill .45s ease-out both; transform-origin:left; }
+
+    .pcard{ cursor:pointer; transition:transform .15s ease; }
+    .pcard:active{ transform:scale(.985); }
+
+    .tabbar{ position:absolute; left:30px; right:30px; bottom:22px; height:58px; background:rgba(20,20,22,.68); backdrop-filter:blur(30px) saturate(160%); -webkit-backdrop-filter:blur(30px) saturate(160%);
+      border:1px solid rgba(255,255,255,.14); border-radius:29px; display:flex; align-items:center; justify-content:space-around; padding:0 6px; box-shadow:0 16px 36px rgba(10,10,18,.28); }
+    .tabitem{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .tabitem.active{ background:rgba(255,255,255,.18); }
+  </style>
+</helmet>
+
+<div style="width:390px; height:844px; background:radial-gradient(115% 30% at 88% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 26% at 8% 4%, #f3dcf5 0%, rgba(243,220,245,0) 55%), var(--bg); overflow:hidden; position:relative;">
+  <div style="display:flex; flex-direction:column; height:100%; padding:56px 20px 96px;">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:0 2px 16px;">
+      <div style="font-size:32px; font-weight:800; letter-spacing:-0.02em;">Proyectos</div>
+      <div style="width:38px; height:38px; border-radius:50%; background:var(--ink); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(10,10,10,.25);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <div class="glass-flat" style="display:flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px; margin-bottom:12px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8e8e93" stroke-width="2.2"/><path d="M21 21L16.65 16.65" stroke="#8e8e93" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span style="font-size:15px; color:#8e8e93;">Buscar cliente o proyecto</span>
+    </div>
+
+    <div class="glass-flat" style="display:flex; border-radius:11px; padding:3px; margin-bottom:16px;">
+      <div style="{{activosPillStyle}}" onClick="{{selectActivos}}">Activos</div>
+      <div style="{{todosPillStyle}}" onClick="{{selectTodos}}">Todos</div>
+      <div style="{{archivadosPillStyle}}" onClick="{{selectArchivados}}">Archivados</div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin:0 2px 10px;">
+      <div style="font-size:12px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.05em;">{{countLabel}}</div>
+      <div style="font-size:12.5px; font-weight:600; color:var(--ink-2);">{{totalLabel}}</div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; overflow-y:auto;">
+      <sc-for list="{{projects}}" as="item" hint-placeholder-count="4">
+        <div class="glass pcard fadein" style="border-radius:16px; padding:15px 16px; animation-delay:{{item.enterDelay}};">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div style="display:flex; gap:11px; min-width:0;">
+              <div style="width:40px; height:40px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; background:{{item.logoBg}}; box-shadow:0 4px 10px {{item.logoShadow}};">{{item.badge}}</div>
+              <div style="min-width:0;">
+                <div style="font-size:15.5px; font-weight:700; letter-spacing:-0.008em;">{{item.name}}</div>
+                <div style="font-size:12px; color:var(--ink-2); margin-top:1px;">{{item.client}}</div>
+              </div>
+            </div>
+            <div style="text-align:right; flex-shrink:0;">
+              <div style="font-size:15px; font-weight:700;">{{item.amount}}</div>
+              <div style="font-size:10.5px; font-weight:600; margin-top:2px; color:{{item.daysColor}};">{{item.days}}</div>
+            </div>
+          </div>
+          <div class="ptrack">
+            <sc-for list="{{item.segs}}" as="seg" hint-placeholder-count="4">
+              <div class="{{seg.cls}}" style="{{seg.style}}"></div>
+            </sc-for>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:11px; color:var(--ink-2);">{{item.phase}}</div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="font-size:10.5px; color:var(--ink-3);">{{item.meta}}</div>
+              <sc-if value="{{item.canArchive}}" hint-placeholder-val="{{true}}">
+                <div style="width:26px; height:26px; border-radius:50%; background:rgba(10,10,10,.05); display:flex; align-items:center; justify-content:center;" onClick="{{item.onRowClick}}">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M6 7L7 20H17L18 7M10 11V16M14 11V16M9 7L10 4H14L15 7" stroke="#8e8e93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M4 11L12 4L20 11V20H14V14H10V20H4V11Z" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="tabitem active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="4" rx="1.4" stroke="#ffffff" stroke-width="1.8"/><rect x="4" y="15" width="16" height="4" rx="1.4" stroke="#ffffff" stroke-width="1.8"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><path d="M5 20C5 16.5 8 14.5 12 14.5C16 14.5 19 16.5 19 20" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div class="tabitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="3.6" ry="8.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/><path d="M3.5 12H20.5" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'activos', archivedIds: ['zt'] };
+  }
+
+  renderVals() {
+    const all = [
+      { id:'km', name:'Rediseño web', client:'Kimovil', amount:'€12.000', badge:'KM', logoBg:'linear-gradient(155deg,#e8654a,#c0432b)', logoShadow:'rgba(192,67,43,.35)', days:'12 días', daysColor:'#d1442e', phase:'Fase 3 de 4 · Desarrollo', meta:'Entrega 25 oct', total:4, done:2, now:1, archived:false },
+      { id:'lt', name:'App de gestión', client:'LTA Finance', amount:'€8.500', badge:'LT', logoBg:'linear-gradient(155deg,#2ea679,#1e6b52)', logoShadow:'rgba(30,107,82,.32)', days:'30 días', daysColor:'#8e8e93', phase:'Fase 2 de 5 · QA', meta:'Entrega 15 nov', total:5, done:1, now:1, archived:false },
+      { id:'ac', name:'Landing de producto', client:'Acme', amount:'€5.000', badge:'AC', logoBg:'linear-gradient(155deg,#7c6bea,#5b45c4)', logoShadow:'rgba(91,69,196,.32)', days:'45 días', daysColor:'#8e8e93', phase:'Fase 1 de 3 · Diseño', meta:'Entrega 30 nov', total:3, done:0, now:1, archived:false },
+      { id:'zt', name:'Rebrand completo', client:'Zenith', amount:'€15.000', badge:'ZT', logoBg:'linear-gradient(155deg,#e0ac2f,#b8860b)', logoShadow:'rgba(184,134,11,.32)', days:'Entregado', daysColor:'#8e8e93', phase:'Fase 4 de 4 · Completado', meta:'Cerrado 2 sep', total:4, done:4, now:0, archived:true },
+    ];
+
+    const archivedIds = this.state.archivedIds || [];
+    const withArchived = all.map(p => ({ ...p, archived: archivedIds.includes(p.id) }));
+    const tab = this.state.tab || 'activos';
+    let filtered = withArchived;
+    if (tab === 'activos') filtered = withArchived.filter(p => !p.archived);
+    if (tab === 'archivados') filtered = withArchived.filter(p => p.archived);
+
+    const projects = filtered.map((p, idx) => {
+      const enterDelay = `${(idx * 0.06).toFixed(2)}s`;
+      const segs = [];
+      for (let i = 0; i < p.total; i++) {
+        let cls = 'ptrack-seg';
+        if (i < p.done) cls += ' done';
+        else if (i === p.done && p.now) cls += ' now';
+        segs.push({ cls, style: `animation-delay:${(i * 0.06).toFixed(2)}s;` });
+      }
+      return {
+        ...p, segs, enterDelay,
+        canArchive: !p.archived,
+        onRowClick: () => {
+          if (p.archived) return;
+          this.setState({ archivedIds: [...archivedIds, p.id] });
+        },
+      };
+    });
+
+    const totalAmount = filtered.reduce((s, p) => s + parseInt(p.amount.replace(/[^\d]/g, ''), 10), 0);
+    const fmt = totalAmount.toLocaleString('es-ES');
+
+    const base = 'flex:1; text-align:center; font-size:13px; font-weight:600; padding:9px 0; border-radius:8px; transition:background .2s, color .2s;';
+    const active = base + 'background:#0a0a0a; color:#ffffff;';
+    const inactive = base + 'color:#6b6b70;';
+
+    return {
+      projects,
+      countLabel: tab === 'archivados' ? `${filtered.length} archivados` : `${filtered.length} proyectos ${tab === 'todos' ? 'en total' : 'activos'}`,
+      totalLabel: `€${fmt}`,
+      activosPillStyle: tab === 'activos' ? active : inactive,
+      todosPillStyle: tab === 'todos' ? active : inactive,
+      archivadosPillStyle: tab === 'archivados' ? active : inactive,
+      selectActivos: () => this.setState({ tab: 'activos' }),
+      selectTodos: () => this.setState({ tab: 'todos' }),
+      selectArchivados: () => this.setState({ tab: 'archivados' }),
+    };
+  }
+}
+</script>
+</body>
+</html>
