@@ -3,13 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { countryName } from "@/lib/countries";
 
 async function requireUser() {
   const supabase = await createClient();
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
+  if (error || !user) {
+    console.error("requireUser: no authenticated user", error);
+    throw new Error("Tu sesión ha caducado. Vuelve a iniciar sesión.");
+  }
   return { supabase, user };
 }
 
@@ -22,17 +27,16 @@ export async function createClientRecord(formData: FormData) {
 
   if (!name) throw new Error("El nombre es obligatorio");
 
-  const countryName = country_code
-    ? (await import("@/lib/countries")).countryName(country_code)
-    : null;
-
   const { error } = await supabase.from("clients").insert({
     user_id: user.id,
     name,
     country_code,
-    country: countryName,
+    country: country_code ? countryName(country_code) : null,
   });
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("createClientRecord: insert failed", error);
+    throw new Error(`No se pudo crear el cliente: ${error.message}`);
+  }
 
   revalidatePath("/clientes");
   redirect("/clientes");

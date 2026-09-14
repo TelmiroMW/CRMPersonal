@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { PhaseTrack } from "@/components/PhaseTrack";
 import { signOut } from "@/lib/actions";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import type { ProjectWithProgress } from "@/lib/types";
 
 function daysUntil(dateStr: string | null) {
@@ -64,6 +65,8 @@ export default async function ResumenPage() {
           </button>
         </form>
       </div>
+
+      <InstallPrompt />
 
       <div className="mb-1 text-[11.5px] font-semibold uppercase tracking-wide text-ink-2">
         Ingresos activos

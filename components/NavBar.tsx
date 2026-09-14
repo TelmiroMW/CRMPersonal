@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 const TABS = [
   {
@@ -67,12 +68,18 @@ export function NavBar() {
           <Link
             key={tab.href}
             href={tab.href}
+            prefetch
             aria-label={tab.label}
-            className={`flex h-11 w-11 items-center justify-center rounded-full transition ${
-              active ? "bg-white/[0.18]" : ""
-            }`}
+            className="relative flex h-11 w-11 items-center justify-center rounded-full"
           >
-            {tab.icon(active)}
+            {active && (
+              <motion.div
+                layoutId="nav-highlight"
+                className="absolute inset-0 rounded-full bg-white/[0.18]"
+                transition={{ type: "spring", stiffness: 550, damping: 32 }}
+              />
+            )}
+            <span className="relative z-10">{tab.icon(active)}</span>
           </Link>
         );
       })}
