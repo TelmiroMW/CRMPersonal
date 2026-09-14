@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "CRM",
   },
+  other: {
+    // Next solo emite "mobile-web-app-capable" (sin prefijo); muchas
+    // versiones de Safari todavía solo respetan la etiqueta clásica.
+    "apple-mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport: Viewport = {
@@ -25,6 +30,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
