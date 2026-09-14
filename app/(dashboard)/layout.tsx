@@ -5,13 +5,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div
       className="min-h-screen"
       style={{
-        // Android/MIUI pinta la franja de la barra de estado en blanco por
-        // su cuenta (confirmado, no depende de nuestro CSS). La capa blanca
-        // funde esa franja con el resto en los primeros ~220px reales; por
-        // debajo, el mismo toque de color atmosférico (lila/rosa) que ya
-        // teníamos, para no perder ese detalle.
+        // Android/MIUI pinta tanto la barra de estado (arriba) como la
+        // barra de gestos (abajo) en blanco por su cuenta, confirmado que
+        // no depende de nuestro CSS. Fundimos nuestro fondo a blanco en
+        // ambos bordes para que la transición parezca buscada; el resto
+        // conserva el toque de color atmosférico de siempre.
+        // backgroundAttachment:fixed ancla el degradado al viewport real
+        // (no a la altura del contenido), así el fundido de abajo queda
+        // siempre pegado al borde de la pantalla aunque haya scroll.
         background:
-          "linear-gradient(180deg, #ffffff 0px, rgba(255,255,255,0) 220px), radial-gradient(115% 30% at 85% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 26% at 8% 4%, #f3dcf5 0%, rgba(243,220,245,0) 55%), #e7e6e2",
+          "linear-gradient(180deg, #ffffff 0px, rgba(255,255,255,0) 220px), linear-gradient(0deg, #ffffff 0px, rgba(255,255,255,0) 90px), radial-gradient(115% 30% at 85% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 26% at 8% 4%, #f3dcf5 0%, rgba(243,220,245,0) 55%), #e7e6e2",
+        backgroundAttachment: "fixed",
       }}
     >
       <div
