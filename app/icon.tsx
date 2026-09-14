@@ -10,17 +10,17 @@ export default function Icon() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#0a0a0a",
-          borderRadius: 16,
+          background: "#ffffff",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
           justifyContent: "center",
           gap: 4,
+          padding: "0 0 12px",
         }}
       >
-        <div style={{ width: 6, height: 14, borderRadius: 3, background: "#ffffff" }} />
-        <div style={{ width: 6, height: 22, borderRadius: 3, background: "#ffffff" }} />
-        <div style={{ width: 6, height: 30, borderRadius: 3, background: "#2f6fed" }} />
+        <div style={{ width: 7, height: 15, borderRadius: 3.5, background: "#0a0a0a" }} />
+        <div style={{ width: 7, height: 25, borderRadius: 3.5, background: "#0a0a0a" }} />
+        <div style={{ width: 7, height: 35, borderRadius: 3.5, background: "#0a0a0a" }} />
       </div>
     ),
     { ...size }

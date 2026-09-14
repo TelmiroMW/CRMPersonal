@@ -9,16 +9,17 @@ export async function GET() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#0a0a0a",
+          background: "#ffffff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: 13,
         }}
       >
-        <div style={{ width: 19, height: 44, borderRadius: 10, background: "#ffffff", display: "flex" }} />
-        <div style={{ width: 19, height: 70, borderRadius: 10, background: "#ffffff", display: "flex" }} />
-        <div style={{ width: 19, height: 96, borderRadius: 10, background: "#2f6fed", display: "flex" }} />
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 9 }}>
+          <div style={{ width: 20, height: 44, borderRadius: 10, background: "#0a0a0a", display: "flex" }} />
+          <div style={{ width: 20, height: 68, borderRadius: 10, background: "#0a0a0a", display: "flex" }} />
+          <div style={{ width: 20, height: 92, borderRadius: 10, background: "#0a0a0a", display: "flex" }} />
+        </div>
       </div>
     ),
     { width: 192, height: 192 }
