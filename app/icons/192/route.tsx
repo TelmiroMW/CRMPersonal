@@ -15,11 +15,11 @@ export async function GET() {
           justifyContent: "center",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-end", gap: 9 }}>
-          <div style={{ width: 20, height: 44, borderRadius: 10, background: "#0a0a0a", display: "flex" }} />
-          <div style={{ width: 20, height: 68, borderRadius: 10, background: "#0a0a0a", display: "flex" }} />
-          <div style={{ width: 20, height: 92, borderRadius: 10, background: "#0a0a0a", display: "flex" }} />
-        </div>
+        {/* Marca escalada al ~65% del lienzo (zona segura para iconos adaptativos de Android) */}
+        <svg width="130" height="130" viewBox="0 0 100 100">
+          <path d="M19 60L50 21L81 60L69 79H31Z" fill="#0a0a0a" />
+          <path d="M50 21L50 79" stroke="#ffffff" strokeWidth="5.5" />
+        </svg>
       </div>
     ),
     { width: 192, height: 192 }

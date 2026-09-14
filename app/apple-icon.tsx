@@ -6,21 +6,11 @@ export const contentType = "image/png";
 export default function AppleIcon() {
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          background: "#ffffff",
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          gap: 12,
-          padding: "0 0 34px",
-        }}
-      >
-        <div style={{ width: 20, height: 42, borderRadius: 10, background: "#0a0a0a" }} />
-        <div style={{ width: 20, height: 70, borderRadius: 10, background: "#0a0a0a" }} />
-        <div style={{ width: 20, height: 98, borderRadius: 10, background: "#0a0a0a" }} />
+      <div style={{ width: "100%", height: "100%", background: "#ffffff", display: "flex" }}>
+        <svg width="180" height="180" viewBox="0 0 108 108">
+          <path d="M8 64L54 6L100 64L82 92H26Z" fill="#0a0a0a" />
+          <path d="M54 6L54 92" stroke="#ffffff" strokeWidth="8" />
+        </svg>
       </div>
     ),
     { ...size }
