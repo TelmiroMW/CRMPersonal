@@ -4,8 +4,7 @@
   "description": "Gestión de clientes y proyectos",
   "start_url": "/",
   "scope": "/",
-  "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display": "standalone",
   "background_color": "#e7e6e2",
   "theme_color": "#e7e6e2",
   "icons": [
