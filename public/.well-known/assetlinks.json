@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.telmiromw.crmpersonal",
+    "sha256_cert_fingerprints": ["9D:8D:B3:77:42:0D:A3:4B:60:AF:99:D9:77:6C:16:3E:3C:86:1D:D3:7D:56:35:60:1D:0A:62:31:43:09:31:68"]
+  }
+}]
