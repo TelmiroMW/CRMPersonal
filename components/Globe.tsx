@@ -5,6 +5,8 @@ import createGlobe from "cobe";
 
 type Marker = { location: [number, number]; size: number };
 
+const SIZE = 240; // tamaño mostrado en pantalla (CSS), en px
+
 // Globo 3D de verdad (WebGL vía cobe) — sustituye al mockup plano de antes.
 // Gira solo despacio y se puede arrastrar con el dedo/ratón, con inercia al
 // soltar. Los colores siguen la paleta de la app: base clara a juego con el
@@ -21,18 +23,19 @@ export function Globe({ markers }: { markers: Marker[] }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const size = 240;
-    let width = 0;
-    const onResize = () => {
-      width = canvas.offsetWidth || size;
-    };
-    window.addEventListener("resize", onResize);
-    onResize();
+    // El búfer de dibujo (canvas.width/height, en píxeles reales) tiene que
+    // ser el tamaño mostrado × devicePixelRatio, y ese MISMO número hay que
+    // pasárselo también a cobe en `width`/`height` — si no coinciden entre
+    // sí, cobe dibuja mal encajado y solo se aprecian los marcadores.
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const bufferSize = Math.round(SIZE * dpr);
+    canvas.width = bufferSize;
+    canvas.height = bufferSize;
 
     const globe = createGlobe(canvas, {
-      devicePixelRatio: Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio : 1) * 2,
-      width: size * 2,
-      height: size * 2,
+      devicePixelRatio: dpr,
+      width: bufferSize,
+      height: bufferSize,
       phi: 0,
       theta: 0.32,
       dark: 0,
@@ -55,21 +58,16 @@ export function Globe({ markers }: { markers: Marker[] }) {
           dragMomentum.current *= 0.92;
         }
         state.phi = phiRef.current;
-        state.width = size * 2;
-        state.height = size * 2;
       },
     });
 
-    return () => {
-      globe.destroy();
-      window.removeEventListener("resize", onResize);
-    };
+    return () => globe.destroy();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(markers)]);
 
   return (
     <div
-      style={{ width: 240, height: 240, cursor: "grab" }}
+      style={{ width: SIZE, height: SIZE, cursor: "grab" }}
       className="relative touch-none"
       onPointerDown={(e) => {
         pointerDown.current = true;
@@ -92,10 +90,7 @@ export function Globe({ markers }: { markers: Marker[] }) {
         dragMomentum.current = delta * 0.00004;
       }}
     >
-      <canvas
-        ref={canvasRef}
-        style={{ width: 240, height: 240, contain: "layout paint size" }}
-      />
+      <canvas ref={canvasRef} style={{ width: SIZE, height: SIZE, contain: "layout paint size" }} />
     </div>
   );
 }
