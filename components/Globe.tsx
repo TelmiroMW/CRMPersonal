@@ -1,0 +1,99 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import createGlobe from "cobe";
+
+type Marker = { location: [number, number]; size: number };
+
+// Globo 3D de verdad (WebGL vía cobe) — sustituye al mockup plano de antes.
+// Gira solo despacio y se puede arrastrar con el dedo/ratón, con inercia al
+// soltar. Los colores siguen la paleta de la app: base clara a juego con el
+// fondo, marcadores en el azul de acento.
+export function Globe({ markers }: { markers: Marker[] }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const phiRef = useRef(0);
+  const pointerDown = useRef(false);
+  const pointerStartX = useRef(0);
+  const phiAtPointerDown = useRef(0);
+  const dragMomentum = useRef(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const size = 240;
+    let width = 0;
+    const onResize = () => {
+      width = canvas.offsetWidth || size;
+    };
+    window.addEventListener("resize", onResize);
+    onResize();
+
+    const globe = createGlobe(canvas, {
+      devicePixelRatio: Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio : 1) * 2,
+      width: size * 2,
+      height: size * 2,
+      phi: 0,
+      theta: 0.32,
+      dark: 0,
+      diffuse: 1.15,
+      mapSamples: 18000,
+      mapBrightness: 5.2,
+      baseColor: [0.906, 0.902, 0.886],
+      markerColor: [0.184, 0.435, 0.929],
+      glowColor: [0.86, 0.9, 0.99],
+      opacity: 0.92,
+      markers,
+      // cobe 2.0.1 soporta onRender en runtime (documentado en su propio
+      // README) pero el .d.ts publicado en el paquete no lo declara.
+      // @ts-expect-error — ver comentario de arriba.
+      onRender: (state) => {
+        if (!pointerDown.current) {
+          phiRef.current += 0.0028 + dragMomentum.current;
+          dragMomentum.current *= 0.92;
+        }
+        state.phi = phiRef.current;
+        state.width = size * 2;
+        state.height = size * 2;
+      },
+    });
+
+    return () => {
+      globe.destroy();
+      window.removeEventListener("resize", onResize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(markers)]);
+
+  return (
+    <div
+      style={{ width: 240, height: 240, cursor: "grab" }}
+      className="relative touch-none"
+      onPointerDown={(e) => {
+        pointerDown.current = true;
+        pointerStartX.current = e.clientX;
+        phiAtPointerDown.current = phiRef.current;
+        (e.target as HTMLElement).style.cursor = "grabbing";
+      }}
+      onPointerUp={(e) => {
+        pointerDown.current = false;
+        (e.target as HTMLElement).style.cursor = "grab";
+      }}
+      onPointerOut={(e) => {
+        pointerDown.current = false;
+        (e.target as HTMLElement).style.cursor = "grab";
+      }}
+      onPointerMove={(e) => {
+        if (!pointerDown.current) return;
+        const delta = e.clientX - pointerStartX.current;
+        phiRef.current = phiAtPointerDown.current + delta * 0.006;
+        dragMomentum.current = delta * 0.00004;
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        style={{ width: 240, height: 240, contain: "layout paint size" }}
+      />
+    </div>
+  );
+}

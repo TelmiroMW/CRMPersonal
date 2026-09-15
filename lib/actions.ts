@@ -55,17 +55,23 @@ export async function createProject(formData: FormData) {
   const { supabase, user } = await requireUser();
   const name = String(formData.get("name") || "").trim();
   const client_id = String(formData.get("client_id") || "");
-  const amount = Number(formData.get("amount") || 0);
+  const billing_type = formData.get("billing_type") === "recurring" ? "recurring" : "one_off";
+  const isRecurring = billing_type === "recurring";
+  const amount = isRecurring ? 0 : Number(formData.get("amount") || 0);
+  const monthly_amount = isRecurring ? Number(formData.get("monthly_amount") || 0) : null;
   const deadline = String(formData.get("deadline") || "") || null;
 
   if (!name || !client_id) throw new Error("Nombre y cliente son obligatorios");
 
   const { data, error } = await supabase
     .from("projects")
-    .insert({ user_id: user.id, name, client_id, amount, deadline })
+    .insert({ user_id: user.id, name, client_id, billing_type, amount, monthly_amount, deadline })
     .select("id")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("createProject: insert failed", error);
+    throw new Error(`No se pudo crear el proyecto: ${error.message}`);
+  }
 
   revalidatePath("/proyectos");
   revalidatePath("/");
@@ -75,12 +81,15 @@ export async function createProject(formData: FormData) {
 export async function updateProject(projectId: string, formData: FormData) {
   const { supabase } = await requireUser();
   const name = String(formData.get("name") || "").trim();
-  const amount = Number(formData.get("amount") || 0);
+  const billing_type = String(formData.get("billing_type") || "one_off");
+  const isRecurring = billing_type === "recurring";
+  const amount = isRecurring ? 0 : Number(formData.get("amount") || 0);
+  const monthly_amount = isRecurring ? Number(formData.get("monthly_amount") || 0) : null;
   const deadline = String(formData.get("deadline") || "") || null;
 
   const { error } = await supabase
     .from("projects")
-    .update({ name, amount, deadline })
+    .update({ name, amount, monthly_amount, deadline })
     .eq("id", projectId);
   if (error) throw new Error(error.message);
 

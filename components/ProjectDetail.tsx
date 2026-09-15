@@ -37,6 +37,7 @@ export function ProjectDetail({
 
   const doneCount = phases.filter((p) => p.completed_at).length;
   const currentPhase = phases.find((p) => !p.completed_at);
+  const isRecurring = project.billing_type === "recurring";
 
   return (
     <div>
@@ -51,7 +52,14 @@ export function ProjectDetail({
         </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[22px] font-extrabold tracking-tight">{project.name}</div>
-          <div className="text-[12.5px] text-ink-2">{clientName}</div>
+          <div className="flex items-center gap-1.5 text-[12.5px] text-ink-2">
+            {clientName}
+            {isRecurring && (
+              <span className="rounded-full bg-accent/10 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-accent">
+                Mensualidad
+              </span>
+            )}
+          </div>
         </div>
         <button
           onClick={() =>
@@ -78,19 +86,30 @@ export function ProjectDetail({
           }}
           className="glass mb-4 flex flex-col gap-3 rounded-card p-4 shadow-glass"
         >
+          <input type="hidden" name="billing_type" value={project.billing_type} />
           <input
             name="name"
             defaultValue={project.name}
             className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
           />
           <div className="flex gap-2.5">
-            <input
-              name="amount"
-              type="number"
-              step="0.01"
-              defaultValue={project.amount}
-              className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
-            />
+            {isRecurring ? (
+              <input
+                name="monthly_amount"
+                type="number"
+                step="0.01"
+                defaultValue={project.monthly_amount ?? 0}
+                className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
+              />
+            ) : (
+              <input
+                name="amount"
+                type="number"
+                step="0.01"
+                defaultValue={project.amount}
+                className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
+              />
+            )}
             <input
               name="deadline"
               type="date"
@@ -114,9 +133,12 @@ export function ProjectDetail({
       ) : (
         <div className="mb-4 flex gap-2.5">
           <button onClick={() => setEditing(true)} className="glass flex-1 rounded-card p-3 text-left shadow-glass">
-            <div className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-2">Ingreso total</div>
+            <div className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-2">
+              {isRecurring ? "Cuota mensual" : "Ingreso total"}
+            </div>
             <div className="tabular-nums flex items-center gap-1.5 text-[16px] font-bold">
-              {formatEUR(Number(project.amount))} <span className="opacity-35">✎</span>
+              {isRecurring ? `${formatEUR(Number(project.monthly_amount))}/mes` : formatEUR(Number(project.amount))}{" "}
+              <span className="opacity-35">✎</span>
             </div>
           </button>
           <button onClick={() => setEditing(true)} className="glass flex-1 rounded-card p-3 text-left shadow-glass">

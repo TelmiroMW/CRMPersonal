@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { createProject } from "@/lib/actions";
+import { NuevoProyectoForm } from "@/components/NuevoProyectoForm";
 
 export default async function NuevoProyectoPage() {
   const supabase = await createClient();
@@ -29,70 +29,7 @@ export default async function NuevoProyectoPage() {
           .
         </div>
       ) : (
-        <form action={createProject} className="glass flex flex-col gap-4 rounded-card p-5 shadow-glass">
-          <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
-              Nombre del proyecto
-            </label>
-            <input
-              name="name"
-              required
-              placeholder="Rediseño web"
-              className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
-              Cliente
-            </label>
-            <select
-              name="client_id"
-              required
-              className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
-            >
-              {clients.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
-                Ingreso total (€)
-              </label>
-              <input
-                name="amount"
-                type="number"
-                min="0"
-                step="0.01"
-                required
-                placeholder="12000"
-                className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
-                Entrega
-              </label>
-              <input
-                name="deadline"
-                type="date"
-                className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="mt-1 rounded-full bg-ink py-3 text-[14px] font-semibold text-white transition active:scale-[0.985]"
-          >
-            Crear proyecto
-          </button>
-        </form>
+        <NuevoProyectoForm clients={clients} />
       )}
     </div>
   );

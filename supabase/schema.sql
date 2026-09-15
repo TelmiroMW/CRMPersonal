@@ -24,15 +24,30 @@ comment on column public.clients.country_code is 'Código ISO de 2 letras usado 
 -- projects
 -- ------------------------------------------------------------
 create table if not exists public.projects (
-  id          uuid primary key default gen_random_uuid(),
-  user_id     uuid not null default auth.uid() references auth.users(id) on delete cascade,
-  client_id   uuid not null references public.clients(id) on delete cascade,
-  name        text not null,
-  amount      numeric(12,2) not null default 0,   -- ingreso total en EUR
-  deadline    date,                                 -- fecha de entrega final
-  archived_at timestamptz,                          -- null = activo
-  created_at  timestamptz not null default now()
+  id              uuid primary key default gen_random_uuid(),
+  user_id         uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  client_id       uuid not null references public.clients(id) on delete cascade,
+  name            text not null,
+  billing_type    text not null default 'one_off'   -- 'one_off' (precio total) | 'recurring' (mensualidad)
+                    check (billing_type in ('one_off', 'recurring')),
+  amount          numeric(12,2) not null default 0,   -- ingreso total en EUR (proyectos 'one_off')
+  monthly_amount  numeric(12,2),                      -- cuota mensual en EUR (proyectos 'recurring')
+  deadline        date,                                 -- fecha de entrega final
+  archived_at     timestamptz,                          -- null = activo
+  created_at      timestamptz not null default now()
 );
+
+-- Si la tabla ya existía de antes de que existieran las mensualidades:
+alter table public.projects add column if not exists billing_type text not null default 'one_off';
+alter table public.projects add column if not exists monthly_amount numeric(12,2);
+do $$ begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'projects_billing_type_check'
+  ) then
+    alter table public.projects
+      add constraint projects_billing_type_check check (billing_type in ('one_off', 'recurring'));
+  end if;
+end $$;
 
 create index if not exists projects_client_id_idx on public.projects(client_id);
 create index if not exists projects_user_id_idx on public.projects(user_id);

@@ -10,13 +10,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         // seguir el degradado. Por eso los bordes funden aquí al mismo
         // #e7e6e2 que usa esa barra nativa Y la pantalla de login: un
         // único color de borde en toda la app para que nunca desentone,
-        // sea cual sea la pantalla. El toque de color queda solo en el
-        // interior, lejos de los bordes.
+        // sea cual sea la pantalla. Las dos primeras capas (edge fades)
+        // son las que garantizan eso — NO tocar su color ni su alcance
+        // (220px arriba / 90px abajo) sin volver a comprobar en el móvil.
+        // El resto del degradado vive POR DEBAJO de esas dos capas, así
+        // que puede ser todo lo vistoso que se quiera sin arriesgar el
+        // borde: tres manchas suaves (azul, malva, menta) dan sensación
+        // de "aurora" en vez de limitarse a una esquina.
         // backgroundAttachment:fixed ancla el degradado al viewport real
         // (no a la altura del contenido), así el fundido de abajo queda
         // siempre pegado al borde de la pantalla aunque haya scroll.
         background:
-          "linear-gradient(180deg, #e7e6e2 0px, rgba(231,230,226,0) 220px), linear-gradient(0deg, #e7e6e2 0px, rgba(231,230,226,0) 90px), radial-gradient(115% 30% at 85% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 26% at 8% 4%, #f3dcf5 0%, rgba(243,220,245,0) 55%), #e7e6e2",
+          "linear-gradient(180deg, #e7e6e2 0px, rgba(231,230,226,0) 220px), linear-gradient(0deg, #e7e6e2 0px, rgba(231,230,226,0) 90px), radial-gradient(130% 60% at 90% -4%, #dbe8fc 0%, rgba(219,232,252,0) 68%), radial-gradient(115% 55% at 2% 12%, #f6def0 0%, rgba(246,222,240,0) 65%), radial-gradient(120% 55% at 50% 108%, #dcf1e3 0%, rgba(220,241,227,0) 65%), #e7e6e2",
         backgroundAttachment: "fixed",
       }}
     >

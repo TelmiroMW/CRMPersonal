@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { flagStyle, countryName } from "@/lib/countries";
+import { flagStyle, countryName, COUNTRIES } from "@/lib/countries";
+import { projectedIncome } from "@/lib/income";
+import { Globe } from "@/components/Globe";
 
 function formatEUR(n: number) {
   return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
@@ -7,14 +9,18 @@ function formatEUR(n: number) {
 
 export default async function MapaPage() {
   const supabase = await createClient();
-  const { data: clients } = await supabase.from("clients").select("id, country_code, projects(amount)");
+  const { data: clients } = await supabase
+    .from("clients")
+    .select("id, country_code, projects(amount, monthly_amount, billing_type, archived_at)");
 
   const byCountry = new Map<string, { total: number; clientCount: number }>();
   let grandTotal = 0;
 
   for (const c of clients ?? []) {
     const code = c.country_code ?? "??";
-    const projectTotal = (c.projects ?? []).reduce((s: number, p: any) => s + Number(p.amount), 0);
+    const projectTotal = (c.projects ?? [])
+      .filter((p: any) => !p.archived_at)
+      .reduce((s: number, p: any) => s + projectedIncome(p), 0);
     grandTotal += projectTotal;
     const entry = byCountry.get(code) ?? { total: 0, clientCount: 0 };
     entry.total += projectTotal;
@@ -26,6 +32,15 @@ export default async function MapaPage() {
     .filter(([code]) => code !== "??")
     .sort((a, b) => b[1].total - a[1].total);
 
+  const maxTotal = Math.max(1, ...rows.map(([, r]) => r.total));
+  const markers = rows
+    .map(([code, r]) => {
+      const country = COUNTRIES.find((c) => c.code === code);
+      if (!country?.coords) return null;
+      return { location: country.coords, size: 0.05 + 0.1 * (r.total / maxTotal) };
+    })
+    .filter((m): m is { location: [number, number]; size: number } => m !== null);
+
   return (
     <div>
       <div className="mb-0.5">
@@ -34,32 +49,7 @@ export default async function MapaPage() {
       </div>
 
       <div className="flex justify-center py-1.5">
-        <svg width="240" height="240" viewBox="0 0 230 230">
-          <defs>
-            <radialGradient id="sphereShade" cx="35%" cy="30%" r="75%">
-              <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="55%" stopColor="#eef1f5" />
-              <stop offset="100%" stopColor="#d3d9e0" />
-            </radialGradient>
-            <radialGradient id="sphereRim" cx="50%" cy="50%" r="50%">
-              <stop offset="82%" stopColor="rgba(20,30,50,0)" />
-              <stop offset="100%" stopColor="rgba(20,30,50,.18)" />
-            </radialGradient>
-          </defs>
-          <circle cx="115" cy="115" r="90" fill="url(#sphereShade)" />
-          <circle cx="115" cy="115" r="90" fill="url(#sphereRim)" />
-          <g style={{ mixBlendMode: "multiply" }}>
-            <ellipse cx="115" cy="115" rx="90" ry="34" fill="none" stroke="#c7cedb" strokeWidth="1" />
-            <ellipse cx="115" cy="115" rx="90" ry="63" fill="none" stroke="#c7cedb" strokeWidth="1" />
-            <ellipse cx="115" cy="115" rx="60" ry="90" fill="none" stroke="#c7cedb" strokeWidth="1" />
-            <ellipse cx="115" cy="115" rx="25" ry="90" fill="none" stroke="#c7cedb" strokeWidth="1" />
-          </g>
-          <circle cx="115" cy="115" r="90" fill="none" stroke="rgba(10,10,10,.12)" strokeWidth="1" />
-          <circle cx="82" cy="100" r="5.5" fill="#2f6fed" />
-          <circle cx="146" cy="90" r="5.5" fill="#2f6fed" />
-          <circle cx="100" cy="136" r="5.5" fill="#2f6fed" />
-          <circle cx="156" cy="146" r="5.5" fill="#2f6fed" />
-        </svg>
+        <Globe markers={markers} />
       </div>
 
       <div className="mb-4 text-center text-xs text-ink-3">
@@ -98,9 +88,6 @@ export default async function MapaPage() {
         ))}
       </div>
 
-      <div className="mt-6 text-center text-[11px] text-ink-3">
-        Versión futura: globo 3D interactivo con países reales coloreados
-      </div>
     </div>
   );
 }

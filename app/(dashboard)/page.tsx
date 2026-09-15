@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { PhaseTrack } from "@/components/PhaseTrack";
 import { signOut } from "@/lib/actions";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { splitIncome } from "@/lib/income";
 import type { ProjectWithProgress } from "@/lib/types";
 
 function daysUntil(dateStr: string | null) {
@@ -25,7 +26,7 @@ export default async function ResumenPage() {
     .order("deadline", { ascending: true, nullsFirst: false });
 
   const projects = (active ?? []) as ProjectWithProgress[];
-  const totalIncome = projects.reduce((sum, p) => sum + Number(p.amount), 0);
+  const { oneOff, recurring, total: totalIncome } = splitIncome(projects);
 
   const { count: clientsCount } = await supabase
     .from("clients")
@@ -69,11 +70,20 @@ export default async function ResumenPage() {
       <InstallPrompt />
 
       <div className="mb-1 text-[11.5px] font-semibold uppercase tracking-wide text-ink-2">
-        Ingresos activos
+        Ingresos activos · hasta fin de año
       </div>
       <div className="tabular-nums mb-1.5 text-[44px] font-extrabold leading-none tracking-tight">
         {formatEUR(totalIncome)}
       </div>
+      {recurring > 0 && (
+        <div className="tabular-nums mb-1 flex items-center gap-1.5 text-sm">
+          <span className="font-semibold text-ink">{formatEUR(oneOff)}</span>
+          <span className="text-ink-2">de proyectos</span>
+          <span className="text-ink-3">·</span>
+          <span className="font-semibold text-ink">{formatEUR(recurring)}</span>
+          <span className="text-ink-2">de mensualidades</span>
+        </div>
+      )}
       <div className="mb-5 text-sm text-ink-2">
         {projects.length} proyecto{projects.length === 1 ? "" : "s"} activo
         {projects.length === 1 ? "" : "s"} · {clientsCount ?? 0} cliente{clientsCount === 1 ? "" : "s"}
@@ -111,7 +121,11 @@ export default async function ResumenPage() {
                   <div className="mt-px text-[12.5px] text-ink-2">{p.client_name}</div>
                 </div>
                 <div className="text-right">
-                  <div className="tabular-nums text-[16px] font-bold">{formatEUR(Number(p.amount))}</div>
+                  <div className="tabular-nums text-[16px] font-bold">
+                    {p.billing_type === "recurring"
+                      ? `${formatEUR(Number(p.monthly_amount))}/mes`
+                      : formatEUR(Number(p.amount))}
+                  </div>
                   {days !== null && (
                     <div className={`mt-px text-[11px] font-semibold ${days <= 14 ? "text-urgent" : "text-ink-2"}`}>
                       {days < 0 ? "vencido" : `${days} días`}

@@ -7,12 +7,16 @@ export type Client = {
   created_at: string;
 };
 
+export type BillingType = "one_off" | "recurring";
+
 export type Project = {
   id: string;
   user_id: string;
   client_id: string;
   name: string;
+  billing_type: BillingType;
   amount: number;
+  monthly_amount: number | null;
   deadline: string | null;
   archived_at: string | null;
   created_at: string;

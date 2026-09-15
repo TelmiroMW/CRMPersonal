@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { PhaseTrack } from "@/components/PhaseTrack";
 import { toggleArchiveProject } from "@/lib/actions";
+import { splitIncome } from "@/lib/income";
 import type { ProjectWithProgress } from "@/lib/types";
 
 function formatEUR(n: number) {
@@ -35,7 +36,7 @@ export function ProyectosList({ projects }: { projects: ProjectWithProgress[] })
     return list;
   }, [projects, tab, query]);
 
-  const total = filtered.reduce((s, p) => s + Number(p.amount), 0);
+  const { total } = splitIncome(filtered);
 
   return (
     <div>
@@ -98,7 +99,11 @@ export function ProyectosList({ projects }: { projects: ProjectWithProgress[] })
                     <div className="mt-px text-xs text-ink-2">{p.client_name}</div>
                   </div>
                   <div className="text-right">
-                    <div className="tabular-nums text-[15px] font-bold">{formatEUR(Number(p.amount))}</div>
+                    <div className="tabular-nums text-[15px] font-bold">
+                      {p.billing_type === "recurring"
+                        ? `${formatEUR(Number(p.monthly_amount))}/mes`
+                        : formatEUR(Number(p.amount))}
+                    </div>
                     {days !== null && !p.archived_at && (
                       <div className={`mt-px text-[10.5px] font-semibold ${days <= 14 ? "text-urgent" : "text-ink-2"}`}>
                         {days < 0 ? "vencido" : `${days} días`}
