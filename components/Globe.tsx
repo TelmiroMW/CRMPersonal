@@ -36,13 +36,15 @@ export function Globe({ markers }: { markers: Marker[] }) {
       phi: 0,
       theta: 0.32,
       dark: 0,
-      diffuse: 1.15,
+      diffuse: 1.25,
       mapSamples: 18000,
-      mapBrightness: 5.2,
-      baseColor: [0.906, 0.902, 0.886],
+      mapBrightness: 3.4,
+      // Tiene que contrastar con el fondo de la página (#e7e6e2) o la
+      // esfera se camufla y solo se ven los marcadores flotando — por eso
+      // casi blanco, bastante más claro que el fondo, no el mismo tono.
+      baseColor: [0.98, 0.98, 0.97],
       markerColor: [0.184, 0.435, 0.929],
-      glowColor: [0.86, 0.9, 0.99],
-      opacity: 0.92,
+      glowColor: [0.6, 0.73, 0.98],
       markers,
       // cobe 2.0.1 soporta onRender en runtime (documentado en su propio
       // README) pero el .d.ts publicado en el paquete no lo declara.

@@ -21,7 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         // (no a la altura del contenido), así el fundido de abajo queda
         // siempre pegado al borde de la pantalla aunque haya scroll.
         background:
-          "linear-gradient(180deg, #e7e6e2 0px, rgba(231,230,226,0) 220px), linear-gradient(0deg, #e7e6e2 0px, rgba(231,230,226,0) 90px), radial-gradient(130% 60% at 90% -4%, #dbe8fc 0%, rgba(219,232,252,0) 68%), radial-gradient(115% 55% at 2% 12%, #f6def0 0%, rgba(246,222,240,0) 65%), radial-gradient(120% 55% at 50% 108%, #dcf1e3 0%, rgba(220,241,227,0) 65%), #e7e6e2",
+          "linear-gradient(180deg, #e7e6e2 0px, rgba(231,230,226,0) 220px), linear-gradient(0deg, #e7e6e2 0px, rgba(231,230,226,0) 90px), radial-gradient(130% 60% at 90% -4%, #b9d3fb 0%, rgba(185,211,251,0) 70%), radial-gradient(115% 55% at 2% 12%, #edb9e2 0%, rgba(237,185,226,0) 68%), radial-gradient(120% 55% at 50% 108%, #b3e6c6 0%, rgba(179,230,198,0) 68%), #e7e6e2",
         backgroundAttachment: "fixed",
       }}
     >
