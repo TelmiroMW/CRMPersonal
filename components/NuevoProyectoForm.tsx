@@ -66,32 +66,75 @@ export function NuevoProyectoForm({ clients }: { clients: { id: string; name: st
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
-            {isRecurring ? "Cuota mensual (€)" : "Ingreso total (€)"}
-          </label>
-          <input
-            name={isRecurring ? "monthly_amount" : "amount"}
-            type="number"
-            min="0"
-            step="0.01"
-            required
-            placeholder={isRecurring ? "150" : "12000"}
-            className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
-          />
+      {isRecurring ? (
+        <>
+          <div>
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
+              Cuota mensual (€)
+            </label>
+            <input
+              name="monthly_amount"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+              placeholder="150"
+              className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
+            />
+          </div>
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
+                Inicio
+              </label>
+              <input
+                name="recurring_start"
+                type="date"
+                required
+                defaultValue={new Date().toISOString().slice(0, 10)}
+                className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
+                Fin (vacío = en curso)
+              </label>
+              <input
+                name="recurring_end"
+                type="date"
+                className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
+              />
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
+              Ingreso total (€)
+            </label>
+            <input
+              name="amount"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+              placeholder="12000"
+              className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
+              Entrega
+            </label>
+            <input
+              name="deadline"
+              type="date"
+              className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
+            />
+          </div>
         </div>
-        <div className="flex-1">
-          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink-2">
-            {isRecurring ? "Próxima revisión" : "Entrega"}
-          </label>
-          <input
-            name="deadline"
-            type="date"
-            className="w-full rounded-xl border border-border bg-white/70 px-3.5 py-2.5 text-[15px] outline-none focus:border-accent"
-          />
-        </div>
-      </div>
+      )}
 
       <button
         type="submit"

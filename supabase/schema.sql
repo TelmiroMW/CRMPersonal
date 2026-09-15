@@ -32,7 +32,9 @@ create table if not exists public.projects (
                     check (billing_type in ('one_off', 'recurring')),
   amount          numeric(12,2) not null default 0,   -- ingreso total en EUR (proyectos 'one_off')
   monthly_amount  numeric(12,2),                      -- cuota mensual en EUR (proyectos 'recurring')
-  deadline        date,                                 -- fecha de entrega final
+  recurring_start date,                                -- inicio del mantenimiento (proyectos 'recurring')
+  recurring_end   date,                                -- fin del mantenimiento; null = en curso, sin fecha de fin
+  deadline        date,                                 -- fecha de entrega final (proyectos 'one_off')
   archived_at     timestamptz,                          -- null = activo
   created_at      timestamptz not null default now()
 );
@@ -40,6 +42,8 @@ create table if not exists public.projects (
 -- Si la tabla ya existía de antes de que existieran las mensualidades:
 alter table public.projects add column if not exists billing_type text not null default 'one_off';
 alter table public.projects add column if not exists monthly_amount numeric(12,2);
+alter table public.projects add column if not exists recurring_start date;
+alter table public.projects add column if not exists recurring_end date;
 do $$ begin
   if not exists (
     select 1 from pg_constraint where conname = 'projects_billing_type_check'
@@ -72,6 +76,12 @@ create unique index if not exists phases_project_order_idx on public.phases(proj
 
 -- ------------------------------------------------------------
 -- Vista de conveniencia: proyecto + % de completación + cliente
+-- IMPORTANTE: aunque aquí ponga "p.*", Postgres CONGELA la lista de
+-- columnas en el momento de crear la vista — si luego añades una
+-- columna a projects (como billing_type/monthly_amount), la vista NO
+-- la recoge sola. Hay que volver a ejecutar este CREATE OR REPLACE VIEW
+-- cada vez que cambie el esquema de projects, si no los datos nuevos
+-- no llegan a la app aunque estén bien guardados en la tabla.
 -- ------------------------------------------------------------
 create or replace view public.projects_with_progress as
 select

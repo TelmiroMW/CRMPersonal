@@ -92,16 +92,34 @@ export function ProjectDetail({
             defaultValue={project.name}
             className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
           />
-          <div className="flex gap-2.5">
-            {isRecurring ? (
+          {isRecurring ? (
+            <>
               <input
                 name="monthly_amount"
                 type="number"
                 step="0.01"
                 defaultValue={project.monthly_amount ?? 0}
+                placeholder="Cuota mensual"
                 className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
               />
-            ) : (
+              <div className="flex gap-2.5">
+                <input
+                  name="recurring_start"
+                  type="date"
+                  defaultValue={project.recurring_start ?? ""}
+                  className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
+                />
+                <input
+                  name="recurring_end"
+                  type="date"
+                  defaultValue={project.recurring_end ?? ""}
+                  placeholder="Fin (en curso)"
+                  className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="flex gap-2.5">
               <input
                 name="amount"
                 type="number"
@@ -109,14 +127,14 @@ export function ProjectDetail({
                 defaultValue={project.amount}
                 className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
               />
-            )}
-            <input
-              name="deadline"
-              type="date"
-              defaultValue={project.deadline ?? ""}
-              className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
-            />
-          </div>
+              <input
+                name="deadline"
+                type="date"
+                defaultValue={project.deadline ?? ""}
+                className="w-full rounded-xl border border-border bg-white/70 px-3 py-2 text-[15px] outline-none focus:border-accent"
+              />
+            </div>
+          )}
           <div className="flex gap-2">
             <button type="submit" className="flex-1 rounded-full bg-ink py-2.5 text-sm font-semibold text-white">
               Guardar
@@ -142,9 +160,14 @@ export function ProjectDetail({
             </div>
           </button>
           <button onClick={() => setEditing(true)} className="glass flex-1 rounded-card p-3 text-left shadow-glass">
-            <div className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-2">Entrega</div>
-            <div className="flex items-center gap-1.5 text-[16px] font-bold">
-              {formatDate(project.deadline)} <span className="opacity-35">✎</span>
+            <div className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-2">
+              {isRecurring ? "Duración" : "Entrega"}
+            </div>
+            <div className="flex items-center gap-1.5 text-[15px] font-bold">
+              {isRecurring
+                ? `${formatDate(project.recurring_start)} – ${project.recurring_end ? formatDate(project.recurring_end) : "en curso"}`
+                : formatDate(project.deadline)}{" "}
+              <span className="opacity-35">✎</span>
             </div>
           </button>
         </div>

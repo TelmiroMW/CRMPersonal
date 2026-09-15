@@ -17,6 +17,8 @@ export type Project = {
   billing_type: BillingType;
   amount: number;
   monthly_amount: number | null;
+  recurring_start: string | null;
+  recurring_end: string | null;
   deadline: string | null;
   archived_at: string | null;
   created_at: string;

@@ -59,13 +59,26 @@ export async function createProject(formData: FormData) {
   const isRecurring = billing_type === "recurring";
   const amount = isRecurring ? 0 : Number(formData.get("amount") || 0);
   const monthly_amount = isRecurring ? Number(formData.get("monthly_amount") || 0) : null;
-  const deadline = String(formData.get("deadline") || "") || null;
+  const recurring_start = isRecurring ? String(formData.get("recurring_start") || "") || null : null;
+  const recurring_end = isRecurring ? String(formData.get("recurring_end") || "") || null : null;
+  const deadline = isRecurring ? null : String(formData.get("deadline") || "") || null;
 
   if (!name || !client_id) throw new Error("Nombre y cliente son obligatorios");
+  if (isRecurring && !recurring_start) throw new Error("La mensualidad necesita una fecha de inicio");
 
   const { data, error } = await supabase
     .from("projects")
-    .insert({ user_id: user.id, name, client_id, billing_type, amount, monthly_amount, deadline })
+    .insert({
+      user_id: user.id,
+      name,
+      client_id,
+      billing_type,
+      amount,
+      monthly_amount,
+      recurring_start,
+      recurring_end,
+      deadline,
+    })
     .select("id")
     .single();
   if (error) {
@@ -85,11 +98,13 @@ export async function updateProject(projectId: string, formData: FormData) {
   const isRecurring = billing_type === "recurring";
   const amount = isRecurring ? 0 : Number(formData.get("amount") || 0);
   const monthly_amount = isRecurring ? Number(formData.get("monthly_amount") || 0) : null;
-  const deadline = String(formData.get("deadline") || "") || null;
+  const recurring_start = isRecurring ? String(formData.get("recurring_start") || "") || null : null;
+  const recurring_end = isRecurring ? String(formData.get("recurring_end") || "") || null : null;
+  const deadline = isRecurring ? null : String(formData.get("deadline") || "") || null;
 
   const { error } = await supabase
     .from("projects")
-    .update({ name, amount, monthly_amount, deadline })
+    .update({ name, amount, monthly_amount, recurring_start, recurring_end, deadline })
     .eq("id", projectId);
   if (error) throw new Error(error.message);
 
