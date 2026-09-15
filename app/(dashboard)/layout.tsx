@@ -5,16 +5,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div
       className="min-h-screen"
       style={{
-        // Android/MIUI pinta tanto la barra de estado (arriba) como la
-        // barra de gestos (abajo) en blanco por su cuenta, confirmado que
-        // no depende de nuestro CSS. Fundimos nuestro fondo a blanco en
-        // ambos bordes para que la transición parezca buscada; el resto
-        // conserva el toque de color atmosférico de siempre.
+        // La barra de estado (arriba) y la de gestos (abajo) de la app
+        // nativa (TWA) son un color FIJO grabado en el APK — no pueden
+        // seguir el degradado. Por eso los bordes funden aquí al mismo
+        // #e7e6e2 que usa esa barra nativa Y la pantalla de login: un
+        // único color de borde en toda la app para que nunca desentone,
+        // sea cual sea la pantalla. El toque de color queda solo en el
+        // interior, lejos de los bordes.
         // backgroundAttachment:fixed ancla el degradado al viewport real
         // (no a la altura del contenido), así el fundido de abajo queda
         // siempre pegado al borde de la pantalla aunque haya scroll.
         background:
-          "linear-gradient(180deg, #ffffff 0px, rgba(255,255,255,0) 220px), linear-gradient(0deg, #ffffff 0px, rgba(255,255,255,0) 90px), radial-gradient(115% 30% at 85% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 26% at 8% 4%, #f3dcf5 0%, rgba(243,220,245,0) 55%), #e7e6e2",
+          "linear-gradient(180deg, #e7e6e2 0px, rgba(231,230,226,0) 220px), linear-gradient(0deg, #e7e6e2 0px, rgba(231,230,226,0) 90px), radial-gradient(115% 30% at 85% -6%, #d9e6fb 0%, rgba(217,230,251,0) 60%), radial-gradient(90% 26% at 8% 4%, #f3dcf5 0%, rgba(243,220,245,0) 55%), #e7e6e2",
         backgroundAttachment: "fixed",
       }}
     >
