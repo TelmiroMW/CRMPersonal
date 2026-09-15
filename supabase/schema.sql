@@ -96,6 +96,20 @@ create policy "phases: solo el dueño" on public.phases
   for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 
 -- ------------------------------------------------------------
+-- Permisos a nivel de tabla para el rol "authenticated"
+-- Postgres comprueba el GRANT sobre la tabla ANTES de evaluar las
+-- políticas de RLS de arriba. Al crear las tablas a mano (SQL Editor,
+-- no el editor visual de Supabase) este permiso no se concede solo —
+-- sin él, cualquier insert/select da "permission denied for table X"
+-- aunque las políticas de RLS sean correctas.
+-- ------------------------------------------------------------
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on public.clients to authenticated;
+grant select, insert, update, delete on public.projects to authenticated;
+grant select, insert, update, delete on public.phases to authenticated;
+grant select on public.projects_with_progress to authenticated;
+
+-- ------------------------------------------------------------
 -- Datos de ejemplo (opcional — bórralo si no lo quieres)
 -- Sustituye 'TU_USER_ID' por tu uid real (Authentication > Users)
 -- ------------------------------------------------------------
