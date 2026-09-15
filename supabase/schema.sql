@@ -79,11 +79,14 @@ create unique index if not exists phases_project_order_idx on public.phases(proj
 -- IMPORTANTE: aunque aquí ponga "p.*", Postgres CONGELA la lista de
 -- columnas en el momento de crear la vista — si luego añades una
 -- columna a projects (como billing_type/monthly_amount), la vista NO
--- la recoge sola. Hay que volver a ejecutar este CREATE OR REPLACE VIEW
--- cada vez que cambie el esquema de projects, si no los datos nuevos
--- no llegan a la app aunque estén bien guardados en la tabla.
+-- la recoge sola. Y como las columnas nuevas se añaden vía ALTER TABLE
+-- (al final de la tabla física), un simple "CREATE OR REPLACE VIEW" ni
+-- siquiera vale para arreglarlo: Postgres exige que cada posición de
+-- columna mantenga el mismo nombre que tenía, y las nuevas columnas se
+-- cuelan en medio (antes de client_name) — hay que DROP + CREATE.
 -- ------------------------------------------------------------
-create or replace view public.projects_with_progress as
+drop view if exists public.projects_with_progress;
+create view public.projects_with_progress as
 select
   p.*,
   c.name as client_name,
